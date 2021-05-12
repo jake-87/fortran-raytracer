@@ -1,10 +1,12 @@
 # math.f90, explained:
-So, we have point functions:
+##So, we have point functions:
 * subtractPoint
 * addPoint
 * scalePoint
+
 These do what it says on the tin.
-Ray functions:
+
+## Ray functions:
 * rayToPoint
 * rayVelToPoint
 * calculateRay
