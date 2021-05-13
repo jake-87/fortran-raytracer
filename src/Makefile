@@ -1,6 +1,5 @@
 SRC != ls *.f90
 OBJ != ls *.o
-MOD != ls *.mod
 TARGET = fray
 build:
 	gfortran $(SRC) -c
@@ -9,5 +8,9 @@ build:
 obj:
 	gfortran $(OBJ) -o $(TARGET)
 cleanobj:
-	rm $(OBJ)
-	rm $(MOD)
+	rm -f $(OBJ)
+clean:
+	make cleanobj
+	rm -f $(TARGET)
+cleanmod:
+	rm -f *.mod

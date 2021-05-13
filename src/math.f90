@@ -17,7 +17,7 @@ module math
         end function addPoint
         function scalePoint(p1, d) result(p2)
             type(point), intent(in) :: p1
-            real(8), intent(in) :: d
+            real, intent(in) :: d
             type(point) :: p2
             p2%x = p1%x * d
             p2%y = p1%y * d
@@ -39,12 +39,12 @@ module math
         end function rayVelToPoint
         function magnitune(p1) result(d)
             type(point), intent(in) :: p1
-            real(8) :: d
-            d = sqrt(p1%x ** 2 + p1%y ** 2 + p1%z ** 2)
+            real :: d
+            d = real(sqrt(p1%x ** 2 + p1%y ** 2 + p1%z ** 2))
         end function magnitune
         function calculateRay(r1, distance) result(r3)
             type(ray), intent(in) :: r1
-            real(8) :: distance, vmag, t
+            real :: distance, vmag, t
             type(ray) :: r3
             type(point) :: r1p2, v, L, r1p1
             r1p1 = rayToPoint(r1) 
@@ -60,4 +60,21 @@ module math
             r3%v%y = L%y
             r3%v%z = L%z
         end function calculateRay
+        function distance(p1, p2) result(d1)
+            type(point), intent(in) :: p1, p2
+            real :: d1
+            d1 = real(sqrt((p1%x - p2%x) ** 2 + (p1%y - p2%y) ** 2 + (p1%z - p2%z) ** 2))
+        end function distance
+        function isInsideSphere(p1, sph) result (bool)
+            type(point), intent(in) :: p1
+            type(sphere), intent(in) :: sph
+            integer :: bool
+            !print *,"dist is", distance(p1,sph%p)
+            !print *,"rad is ", sph%r
+            if (distance(p1, sph%p) < sph%r) then
+                bool = 1
+            else
+                bool = 0
+            end if
+        end function isInsideSphere
 end module math
