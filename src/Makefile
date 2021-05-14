@@ -2,11 +2,11 @@ SRC != ls *.f90
 OBJ != ls *.o
 TARGET = fray
 build:
-	gfortran $(SRC) -c
+	gfortran $(SRC) -c -fopenmp
 	make obj
 	make cleanobj
 obj:
-	gfortran $(OBJ) -o $(TARGET)
+	gfortran $(OBJ) -o $(TARGET) -fopenmp
 cleanobj:
 	rm -f $(OBJ)
 clean:

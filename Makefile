@@ -11,5 +11,5 @@ gc:
 	git commit
 	git push
 clean:
-	rm -f $(TARGET) *.mod
+	rm -f $(TARGET) *.mod output.ppm
 	cd src && make clean

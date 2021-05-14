@@ -37,11 +37,11 @@ module math
             p1%y = r1%v%y
             p1%z = r1%v%z
         end function rayVelToPoint
-        function magnitune(p1) result(d)
+        function magnitude(p1) result(d)
             type(point), intent(in) :: p1
             real :: d
             d = real(sqrt(p1%x ** 2 + p1%y ** 2 + p1%z ** 2))
-        end function magnitune
+        end function magnitude
         function calculateRay(r1, distance) result(r3)
             type(ray), intent(in) :: r1
             real :: distance, vmag, t
@@ -50,7 +50,7 @@ module math
             r1p1 = rayToPoint(r1) 
             r1p2 = rayVelToPoint(r1)
             v = subtractPoint(r1p2,r1p1)
-            vmag = magnitune(v)
+            vmag = magnitude(v)
             t = distance / vmag
             L = addPoint(r1p1, scalePoint(v, t))
             r3%p%x = r1%p%x

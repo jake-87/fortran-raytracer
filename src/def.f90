@@ -1,6 +1,9 @@
 module def
+    type color
+        integer :: r,g,b
+    end type color
     type point
-        real(8) :: x,y,z
+        real :: x,y,z
     end type point
     type ray
         type(point) :: p
@@ -8,11 +11,12 @@ module def
     end type ray
     type sphere
         type(point) :: p
-        real(8) :: r
+        real :: r
+        type(color) :: color
     end type sphere
     type light
         type(point) :: p
-        integer(kind=8) :: rgb(3)
+        type(color) :: color
     end type light
     type camera
         type(point) :: p, screen
@@ -45,13 +49,23 @@ module def
             p1%y = d2
             p1%z = d3
         end function mkpoint
-        function mksphere(d1, d2, d3, r) result(p1)
+        function mksphere(d1, d2, d3, r, red, green, blue) result(p1)
             real, intent(in) :: d1, d2, d3, r
+            integer, intent(in) :: red, green, blue
             type(sphere) :: p1
             p1%p%x = d1
             p1%p%y = d2
             p1%p%z = d3
             p1%r = r
+            p1%color%r = red
+            p1%color%b = blue
+            p1%color%g = green
         end function mksphere
-
+        subroutine colorToRGB(c, r, g ,b)
+            type(color), intent(in) :: c
+            integer, intent(out) :: r, g, b
+            r = c%r
+            g = c%g
+            b = c%b
+        end subroutine colorToRGB
 end module def
