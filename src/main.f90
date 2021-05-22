@@ -2,24 +2,20 @@ program fray
     use math
     use def
     use rgbimage_m
-    real :: onex, oney, smallestdist, start, finish
-    integer :: xvar, yvar, x, y, sphcheck = 0, sphcount, inter, bounces
-    type(sphere) :: sph(1)
+    use sphdef
+    real :: onex, oney, smallestdist
+    integer :: xvar, yvar, x, y, sphcheck = 0, sphcount, inter, bounces, spherenum
+    type(sphere) :: sph(2)
     type(camera) :: cam
     type(ray) :: mainray, tempray
-    type(point) :: storeage,  tmp1, tmp2
+    type(point) :: storeage
     type(color) :: spherecolor
-    integer :: r,g,b
+    integer :: r,g,b, rgb(3)
     type(rgbimage) :: image
-    tmp1%x = 0
-    tmp1%z = 0
-    tmp1%y = 0
-    tmp2%x = 2
-    tmp2%y = 3
-    tmp2%z = 6
-    print *, "test is : ",distance(tmp1, tmp2)
     cam = mkcam(0.0,0.0,0.0,1.0,0.0,0.0)
-    sph = mksphere(10.0, 0.0, 0.0, 2.0, 255, 255, 255)
+    spherenum = 2
+    call spheredef(sph,spherenum)
+    print *, sph
     print *, "input x:"
     read *, x
     print *, "input y:"
@@ -31,29 +27,25 @@ program fray
     oney = 1 / real(y)
     call image%init(x,y)
     print *, "Now calculating image."
-    !$omp parallel do
     do yvar = -y, y
-        !$omp parallel do
         do xvar = -x, x
             inter = 0
             sphcheck = 0  
             smallestdist = 19999998
             mainray = mkray(0.0,0.0,0.0,1.0,oney * yvar, onex * xvar)
             do while (sphcheck /= 1)
-                do sphcount = 1, 1
+                do sphcount = 1, spherenum
+                    if (distance(sph(sphcount)%p, mainray%p) + 0.1 < smallestdist) then
+                        smallestdist = distance(sph(sphcount)%p, mainray%p) + 0.1
+                    end if
                     if (isInsideSphere(mainray%p, sph(sphcount)) == 1) then
-                        sphcheck = 1 
+                        spherecolor = sph(sphcount)%color
+                        sphcheck = 1
                     else
                         sphcheck = 0
                     end if
-                    if (distance(sph(sphcount)%p, mainray%p) < smallestdist) then
-                        smallestdist = distance(sph(sphcount)%p, mainray%p)
-                        spherecolor = sph(sphcount)%color
-                    end if
                 end do
-                if (sphcheck == 1) then
-                    exit
-                end if
+                if (sphcheck == 1) exit
                 tempray = calculateRay(mainray, smallestdist)
                 storeage%x = mainray%v%x
                 storeage%y = mainray%v%y
@@ -71,14 +63,15 @@ program fray
             end do
             if (sphcheck == 1) then
                 call colorToRGB(spherecolor, r, g ,b)
-                call image%set_pixel(xvar + (x / 2), yvar + (y / 2), [r,g,b])
+                rgb(1) = r
+                rgb(2) = g
+                rgb(3) = b
+                call image%set_pixel(xvar + (x / 2), yvar + (y / 2), rgb)
             else
                 call image%set_pixel(xvar + (x / 2), yvar + (y / 2), [0,0,0])
             end if
         end do
-        !$omp end parallel do
     end do
-    !$omp end parallel do
     print *, "Now writing image."
     call image%write("output.ppm")
 end program fray

@@ -60,6 +60,13 @@ module math
             r3%v%y = L%y
             r3%v%z = L%z
         end function calculateRay
+        function sphdistance(p1, p2) result(d1)
+            type(point), intent(in) :: p2
+            type(sphere), intent(in) :: p1
+            real :: d1
+            d1 = real(sqrt((p1%p%x - p2%x) ** 2 + (p1%p%y - p2%y) ** 2 + (p1%p%z - p2%z) ** 2))
+            d1 = d1 + p1%r - 0.1
+        end function sphdistance
         function distance(p1, p2) result(d1)
             type(point), intent(in) :: p1, p2
             real :: d1
@@ -69,9 +76,7 @@ module math
             type(point), intent(in) :: p1
             type(sphere), intent(in) :: sph
             integer :: bool
-            !print *,"dist is", distance(p1,sph%p)
-            !print *,"rad is ", sph%r
-            if (distance(p1, sph%p) < sph%r) then
+            if (distance(p1, sph%p) < sph%r + 0.01) then
                 bool = 1
             else
                 bool = 0
